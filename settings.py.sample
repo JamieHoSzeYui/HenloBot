@@ -1,8 +1,11 @@
 import os
 
-TOKEN = os.environ.get("TELEGRAM_API_TOKEN", '')
+token = os.getenv('BOTKEY')
+user = os.getenv('USERKEY')
 
-ENABLED_USERS = os.environ.get("ENABLED_USERS", '')
+TOKEN = os.environ.get("TELEGRAM_API_TOKEN", '{BOTKEY}')
+
+ENABLED_USERS = os.environ.get("ENABLED_USERS", '{USERKEY}')
 ENABLED_USERS = set(int(e.strip()) for e in ENABLED_USERS.split(','))
 
 CMD_WHITE_LIST = {}
