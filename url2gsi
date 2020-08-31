@@ -1,0 +1,36 @@
+#!/bin/bash
+
+$ROMDL=$1
+$ROMTYPE=$2
+
+telegram -C "$ROMTYPE:Downloading Base ROM"
+mkdir input
+aria2c $1 -d input/ | wget $1 -P input/
+
+telegram -C "$ROMTYPE:Making GSI.."
+./ErfanGSIs/url2gsi.sh input/* $ROMTYPE
+
+telegram -C "$ROMTYPE:Zipping.."
+cd ErfanGSIs/output/
+rm *-AB*.txt
+mv *Aonly*.txt output.txt
+AB=$(ls | grep AB)
+AO=$(ls | greb Aonly)
+
+zip -r $AB.7z $AB
+zip -r $AO.7z $AO
+
+curl -sL https://git.io/file-transfer | sh
+
+DOWNLOAD1=$(./transfer tmp $AO.7z | grep -o -P '(?<=Download Link: )')
+DOWNLOAD2=$(./transfer tmp $AB.7z | grep -o -P '(?<=Download Link: )')
+
+telegram -M "Link for Aonly : $DOWNLOAD1"
+telegram -M "Link for AB: $DOWNLOAD2"
+telegram -M "Notes down below."
+telegram -f output.txt
+
+echo "Job done."
+rm -rf *
+cd ../../
+rm -rf input
